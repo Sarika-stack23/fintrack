@@ -1,13 +1,22 @@
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
+import {
+  LayoutDashboard,
+  ArrowLeftRight,
+  PieChart,
+  Target,
+  Settings,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
 
 const links = [
-  { path: "/", label: "Dashboard", icon: "▣" },
-  { path: "/transactions", label: "Transactions", icon: "⇄" },
-  { path: "/budget", label: "Budget", icon: "◎" },
-  { path: "/goals", label: "Goals", icon: "◉" },
-  { path: "/settings", label: "Settings", icon: "✦" },
+  { path: "/", label: "Dashboard", icon: LayoutDashboard },
+  { path: "/transactions", label: "Transactions", icon: ArrowLeftRight },
+  { path: "/budget", label: "Budget", icon: PieChart },
+  { path: "/goals", label: "Goals", icon: Target },
+  { path: "/settings", label: "Settings", icon: Settings },
 ];
 
 export default function Sidebar() {
@@ -29,7 +38,7 @@ export default function Sidebar() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="text-lg font-bold text-white whitespace-nowrap tracking-tight"
+              className="text-lg font-bold text-white whitespace-nowrap"
             >
               💰 FinTrack
             </motion.span>
@@ -37,48 +46,62 @@ export default function Sidebar() {
         </AnimatePresence>
         <button
           onClick={() => setCollapsed(!collapsed)}
-          className="w-8 h-8 rounded-lg bg-white/10 hover:bg-white/20 flex items-center justify-center transition text-white text-xs ml-auto flex-shrink-0"
+          className="w-8 h-8 rounded-lg bg-white/10 hover:bg-white/20 flex items-center justify-center transition ml-auto flex-shrink-0"
           aria-label="Toggle Sidebar"
         >
-          {collapsed ? "▶" : "◀"}
+          {collapsed
+            ? <ChevronRight size={16} />
+            : <ChevronLeft size={16} />
+          }
         </button>
       </div>
 
       {/* Nav Links */}
       <nav className="flex flex-col gap-1 px-3 py-4 flex-1">
-        {links.map((link) => (
-          <NavLink
-            key={link.path}
-            to={link.path}
-            end
-            className={({ isActive }) =>
-              `flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200
-              ${isActive
-                ? "bg-primary text-white"
-                : "text-gray-300 hover:bg-white/10 hover:text-white"
-              }`
-            }
-          >
-            <span className="text-base flex-shrink-0 w-5 text-center">{link.icon}</span>
-            <AnimatePresence>
-              {!collapsed && (
-                <motion.span
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  className="whitespace-nowrap"
-                >
-                  {link.label}
-                </motion.span>
+        {links.map((link) => {
+          const Icon = link.icon;
+          return (
+            <NavLink
+              key={link.path}
+              to={link.path}
+              end
+              className={({ isActive }) =>
+                `flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 group
+                ${isActive
+                  ? "bg-primary text-white shadow-lg shadow-primary/20"
+                  : "text-gray-400 hover:bg-white/10 hover:text-white"
+                }`
+              }
+            >
+              {({ isActive }) => (
+                <>
+                  <Icon
+                    size={18}
+                    className={`flex-shrink-0 transition-colors
+                      ${isActive ? "text-white" : "text-gray-400 group-hover:text-white"}`}
+                  />
+                  <AnimatePresence>
+                    {!collapsed && (
+                      <motion.span
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="whitespace-nowrap"
+                      >
+                        {link.label}
+                      </motion.span>
+                    )}
+                  </AnimatePresence>
+                </>
               )}
-            </AnimatePresence>
-          </NavLink>
-        ))}
+            </NavLink>
+          );
+        })}
       </nav>
 
       {/* Bottom User */}
       <div className="px-3 py-4 border-t border-white/10">
-        <div className={`flex items-center gap-3 px-2 py-2 bg-white/10 rounded-xl
+        <div className={`flex items-center gap-3 px-3 py-2.5 bg-white/10 rounded-xl cursor-pointer hover:bg-white/20 transition
           ${collapsed ? "justify-center" : ""}`}>
           <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-sm font-bold flex-shrink-0">
             {name[0].toUpperCase()}
@@ -89,7 +112,7 @@ export default function Sidebar() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="overflow-hidden"
+                className="overflow-hidden flex-1"
               >
                 <p className="text-sm font-semibold truncate">{name}</p>
                 <p className="text-xs text-gray-400 truncate">{email}</p>

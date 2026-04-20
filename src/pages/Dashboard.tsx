@@ -1,10 +1,13 @@
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import StatCard from "../components/cards/StatCard";
 import LineChart from "../components/charts/LineChart";
 import DonutChart from "../components/charts/DonutChart";
 import { stats, transactions } from "../data/mockData";
 
 export default function Dashboard() {
+  const navigate = useNavigate();
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -12,7 +15,7 @@ export default function Dashboard() {
       transition={{ duration: 0.4 }}
       className="flex flex-col gap-6"
     >
-      {/* Page Header */}
+      {/* Header */}
       <div>
         <h1 className="text-xl font-bold text-dark">Overview</h1>
         <p className="text-sm text-gray-400">Your financial summary for April 2026</p>
@@ -41,10 +44,16 @@ export default function Dashboard() {
       {/* Recent Transactions */}
       <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-base font-semibold text-dark">Recent Transactions</h2>
-          <span className="text-xs text-primary font-medium cursor-pointer hover:underline">
+          <div>
+            <h2 className="text-base font-semibold text-dark">Recent Transactions</h2>
+            <p className="text-xs text-gray-400">Last 5 transactions</p>
+          </div>
+          <button
+            onClick={() => navigate("/transactions")}
+            className="text-xs text-primary font-semibold hover:underline px-3 py-1.5 rounded-xl hover:bg-primary/10 transition"
+          >
             View All →
-          </span>
+          </button>
         </div>
         <div className="flex flex-col">
           {transactions.map((t, i) => (
@@ -53,9 +62,9 @@ export default function Dashboard() {
               initial={{ opacity: 0, x: -10 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: i * 0.07 }}
-              className="flex items-center justify-between py-3 border-b border-gray-50 last:border-0 hover:bg-light px-2 rounded-xl transition"
+              className="flex items-center justify-between py-3 border-b border-gray-50 last:border-0 hover:bg-light px-2 rounded-xl transition cursor-pointer"
+              onClick={() => navigate("/transactions")}
             >
-              {/* Left */}
               <div className="flex items-center gap-3">
                 <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-base
                   ${t.amount > 0 ? "bg-success/10" : "bg-danger/10"}`}>
@@ -66,14 +75,11 @@ export default function Dashboard() {
                   <p className="text-xs text-gray-400">{t.category} · {t.date}</p>
                 </div>
               </div>
-
-              {/* Amount */}
               <div className="flex items-center gap-2">
-                <span className={`text-sm font-bold
-                  ${t.amount > 0 ? "text-success" : "text-danger"}`}>
+                <span className={`text-sm font-bold ${t.amount > 0 ? "text-success" : "text-danger"}`}>
                   {t.amount > 0 ? "+" : "-"}₹{Math.abs(t.amount).toLocaleString()}
                 </span>
-                <span className={`text-xs px-2 py-0.5 rounded-full font-medium
+                <span className={`text-xs px-2 py-0.5 rounded-full font-medium hidden sm:block
                   ${t.amount > 0 ? "bg-success/10 text-success" : "bg-danger/10 text-danger"}`}>
                   {t.amount > 0 ? "Credit" : "Debit"}
                 </span>
