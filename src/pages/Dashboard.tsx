@@ -12,28 +12,53 @@ export default function Dashboard() {
       transition={{ duration: 0.4 }}
       className="flex flex-col gap-6"
     >
+      {/* Page Header */}
+      <div>
+        <h1 className="text-xl font-bold text-dark">Overview</h1>
+        <p className="text-sm text-gray-400">Your financial summary for April 2026</p>
+      </div>
+
+      {/* Stat Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {stats.map((stat) => (
-          <StatCard key={stat.label} {...stat} />
+        {stats.map((stat, i) => (
+          <motion.div
+            key={stat.label}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: i * 0.1 }}
+          >
+            <StatCard {...stat} />
+          </motion.div>
         ))}
       </div>
+
+      {/* Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <LineChart />
         <DonutChart />
       </div>
+
+      {/* Recent Transactions */}
       <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
-        <h2 className="text-base font-semibold text-dark mb-4">Recent Transactions</h2>
-        <div className="flex flex-col gap-3">
-          {transactions.map((t) => (
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-base font-semibold text-dark">Recent Transactions</h2>
+          <span className="text-xs text-primary font-medium cursor-pointer hover:underline">
+            View All →
+          </span>
+        </div>
+        <div className="flex flex-col">
+          {transactions.map((t, i) => (
             <motion.div
               key={t.id}
               initial={{ opacity: 0, x: -10 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.3 }}
-              className="flex items-center justify-between py-3 border-b border-gray-50 last:border-0"
+              transition={{ delay: i * 0.07 }}
+              className="flex items-center justify-between py-3 border-b border-gray-50 last:border-0 hover:bg-light px-2 rounded-xl transition"
             >
+              {/* Left */}
               <div className="flex items-center gap-3">
-                <div className={`w-9 h-9 rounded-xl flex items-center justify-center text-sm ${t.amount > 0 ? "bg-success/10" : "bg-danger/10"}`}>
+                <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-base
+                  ${t.amount > 0 ? "bg-success/10" : "bg-danger/10"}`}>
                   {t.amount > 0 ? "📈" : "💸"}
                 </div>
                 <div>
@@ -41,9 +66,18 @@ export default function Dashboard() {
                   <p className="text-xs text-gray-400">{t.category} · {t.date}</p>
                 </div>
               </div>
-              <span className={`text-sm font-semibold ${t.amount > 0 ? "text-success" : "text-danger"}`}>
-                {t.amount > 0 ? "+" : ""}₹{Math.abs(t.amount).toLocaleString()}
-              </span>
+
+              {/* Amount */}
+              <div className="flex items-center gap-2">
+                <span className={`text-sm font-bold
+                  ${t.amount > 0 ? "text-success" : "text-danger"}`}>
+                  {t.amount > 0 ? "+" : "-"}₹{Math.abs(t.amount).toLocaleString()}
+                </span>
+                <span className={`text-xs px-2 py-0.5 rounded-full font-medium
+                  ${t.amount > 0 ? "bg-success/10 text-success" : "bg-danger/10 text-danger"}`}>
+                  {t.amount > 0 ? "Credit" : "Debit"}
+                </span>
+              </div>
             </motion.div>
           ))}
         </div>

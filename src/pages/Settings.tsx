@@ -3,12 +3,15 @@ import { motion } from "framer-motion";
 import Toggle from "../components/ui/Toggle";
 
 export default function Settings() {
-  const [name, setName] = useState("Sarika");
-  const [email, setEmail] = useState("sarika@email.com");
-  const [currency, setCurrency] = useState("INR");
+  const [name, setName] = useState(() => localStorage.getItem("name") || "Sarika");
+  const [email, setEmail] = useState(() => localStorage.getItem("email") || "sarikajivrajika2005@gmail.com");
+  const [currency, setCurrency] = useState(() => localStorage.getItem("currency") || "INR");
   const [saved, setSaved] = useState(false);
 
   const handleSave = () => {
+    localStorage.setItem("name", name);
+    localStorage.setItem("email", email);
+    localStorage.setItem("currency", currency);
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
   };
@@ -37,18 +40,27 @@ export default function Settings() {
         </div>
         <div className="flex flex-col gap-1">
           <label className="text-xs font-medium text-gray-400">Full Name</label>
-          <input value={name} onChange={(e) => setName(e.target.value)}
-            className="px-4 py-2 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-primary" />
+          <input
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className="px-4 py-2 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+          />
         </div>
         <div className="flex flex-col gap-1">
           <label className="text-xs font-medium text-gray-400">Email</label>
-          <input value={email} onChange={(e) => setEmail(e.target.value)}
-            className="px-4 py-2 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-primary" />
+          <input
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="px-4 py-2 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+          />
         </div>
         <div className="flex flex-col gap-1">
           <label className="text-xs font-medium text-gray-400">Currency</label>
-          <select value={currency} onChange={(e) => setCurrency(e.target.value)}
-            className="px-4 py-2 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-primary">
+          <select
+            value={currency}
+            onChange={(e) => setCurrency(e.target.value)}
+            className="px-4 py-2 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+          >
             <option value="INR">₹ INR — Indian Rupee</option>
             <option value="USD">$ USD — US Dollar</option>
             <option value="EUR">€ EUR — Euro</option>
@@ -58,12 +70,22 @@ export default function Settings() {
         <motion.button
           whileTap={{ scale: 0.95 }}
           onClick={handleSave}
-          className={`w-full py-3 rounded-xl text-sm font-semibold transition-all
+          className={`w-full py-3 rounded-xl text-sm font-semibold transition-all duration-300
             ${saved ? "bg-success text-white" : "bg-primary text-white hover:bg-indigo-600"}`}
         >
           {saved ? "✅ Saved!" : "Save Changes"}
         </motion.button>
+        {saved && (
+          <motion.p
+            initial={{ opacity: 0, y: -5 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-center text-xs text-success font-medium"
+          >
+            Profile updated! Data saved to browser ✅
+          </motion.p>
+        )}
       </div>
+
       <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex flex-col gap-2">
         <h2 className="text-base font-semibold text-dark mb-2">Notifications</h2>
         <Toggle label="Budget Alerts" defaultOn={true} />
@@ -71,6 +93,7 @@ export default function Settings() {
         <Toggle label="Goal Milestones" defaultOn={false} />
         <Toggle label="New Transaction Alerts" defaultOn={false} />
       </div>
+
       <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex flex-col gap-2">
         <h2 className="text-base font-semibold text-dark mb-2">Appearance</h2>
         <Toggle label="Dark Mode" defaultOn={false} />
