@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { Search, Bell, Settings, LayoutDashboard, CreditCard, LogOut, X } from "lucide-react";
+import { Search, Bell, Settings, LayoutDashboard, CreditCard, LogOut, X, Menu } from "lucide-react";
 
 function getGreeting() {
   const hour = new Date().getHours();
@@ -12,10 +12,7 @@ function getGreeting() {
 
 function getDate() {
   return new Date().toLocaleDateString("en-IN", {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-    year: "numeric",
+    weekday: "long", day: "numeric", month: "long", year: "numeric",
   });
 }
 
@@ -27,7 +24,11 @@ const allPages = [
   { label: "Settings", path: "/settings", desc: "Account preferences" },
 ];
 
-export default function Navbar() {
+interface NavbarProps {
+  onMenuClick?: () => void;
+}
+
+export default function Navbar({ onMenuClick }: NavbarProps) {
   const name = localStorage.getItem("name") || "Sarika";
   const email = localStorage.getItem("email") || "sarika@email.com";
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -59,42 +60,47 @@ export default function Navbar() {
       initial={{ y: -40, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.4 }}
-      className="w-full bg-white border-b border-gray-100 px-6 py-4 flex items-center justify-between shadow-sm z-50 relative"
+      className="w-full bg-white border-b border-gray-100 px-4 lg:px-6 py-4 flex items-center justify-between shadow-sm z-50 relative"
     >
       {/* Left */}
-      <div>
-        <h1 className="text-lg font-semibold text-dark">
-          {getGreeting()}, {name} 👋
-        </h1>
-        <p className="text-xs text-gray-400">{getDate()}</p>
+      <div className="flex items-center gap-3">
+        {/* Mobile Menu Button */}
+        <button
+          onClick={onMenuClick}
+          className="p-2 rounded-xl hover:bg-gray-100 transition lg:hidden"
+          aria-label="Open menu"
+        >
+          <Menu size={20} className="text-dark" />
+        </button>
+        <div>
+          <h1 className="text-base lg:text-lg font-semibold text-dark">
+            {getGreeting()}, {name} 👋
+          </h1>
+          <p className="text-xs text-gray-400 hidden sm:block">{getDate()}</p>
+        </div>
       </div>
 
       {/* Right */}
-      <div className="flex items-center gap-3" ref={dropdownRef}>
+      <div className="flex items-center gap-2 lg:gap-3" ref={dropdownRef}>
 
         {/* Search */}
-        <div className="relative">
-          <div className="flex items-center gap-2 px-4 py-2 rounded-xl border border-gray-200 bg-light w-48 focus-within:ring-2 focus-within:ring-primary focus-within:border-primary transition">
+        <div className="relative hidden md:block">
+          <div className="flex items-center gap-2 px-4 py-2 rounded-xl border border-gray-200 bg-light w-48 focus-within:ring-2 focus-within:ring-primary transition">
             <Search size={14} className="text-gray-400 flex-shrink-0" />
             <input
               type="text"
               placeholder="Search..."
               value={searchQuery}
-              onChange={(e) => {
-                setSearchQuery(e.target.value);
-                setSearchOpen(e.target.value.length > 0);
-              }}
+              onChange={(e) => { setSearchQuery(e.target.value); setSearchOpen(e.target.value.length > 0); }}
               onFocus={() => searchQuery && setSearchOpen(true)}
               className="text-sm bg-transparent focus:outline-none w-full text-dark"
             />
             {searchQuery && (
               <button onClick={() => { setSearchQuery(""); setSearchOpen(false); }}>
-                <X size={12} className="text-gray-400 hover:text-dark" />
+                <X size={12} className="text-gray-400" />
               </button>
             )}
           </div>
-
-          {/* Search Results */}
           <AnimatePresence>
             {searchOpen && searchResults.length > 0 && (
               <motion.div
@@ -103,17 +109,11 @@ export default function Navbar() {
                 exit={{ opacity: 0, y: -8 }}
                 className="absolute top-12 left-0 w-64 bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden z-50"
               >
-                <p className="text-xs text-gray-400 px-4 pt-3 pb-1 font-medium uppercase tracking-wide">
-                  Pages
-                </p>
+                <p className="text-xs text-gray-400 px-4 pt-3 pb-1 font-medium uppercase tracking-wide">Pages</p>
                 {searchResults.map((result) => (
                   <button
                     key={result.path}
-                    onClick={() => {
-                      navigate(result.path);
-                      setSearchQuery("");
-                      setSearchOpen(false);
-                    }}
+                    onClick={() => { navigate(result.path); setSearchQuery(""); setSearchOpen(false); }}
                     className="w-full flex flex-col px-4 py-3 hover:bg-light transition text-left"
                   >
                     <span className="text-sm font-medium text-dark">{result.label}</span>
@@ -125,17 +125,16 @@ export default function Navbar() {
           </AnimatePresence>
         </div>
 
-        {/* Notification Bell */}
+        {/* Bell */}
         <div className="relative">
           <button
-            onClick={() => { setNotifOpen(!notifOpen); setDropdownOpen(false); setSearchOpen(false); }}
+            onClick={() => { setNotifOpen(!notifOpen); setDropdownOpen(false); }}
             className="relative p-2 rounded-xl hover:bg-gray-100 transition"
             aria-label="Notifications"
           >
             <Bell size={18} className="text-dark" />
             <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-danger rounded-full"></span>
           </button>
-
           <AnimatePresence>
             {notifOpen && (
               <motion.div
@@ -151,7 +150,7 @@ export default function Navbar() {
                 <div className="flex flex-col gap-3">
                   {[
                     { icon: "⚠️", title: "Entertainment budget at 75%", sub: "Only ₹501 remaining" },
-                    { icon: "🎯", title: "New Phone goal at 60%", sub: "₹10,000 more to go" },
+                    { icon: "��", title: "New Phone goal at 60%", sub: "₹10,000 more to go" },
                     { icon: "💰", title: "Salary credited", sub: "+₹30,000 on Apr 1" },
                   ].map((n, i) => (
                     <div key={i} className="flex gap-3 items-start p-2 rounded-xl hover:bg-light transition cursor-pointer">
@@ -168,15 +167,14 @@ export default function Navbar() {
           </AnimatePresence>
         </div>
 
-        {/* Avatar + Dropdown */}
+        {/* Avatar */}
         <div className="relative">
           <button
-            onClick={() => { setDropdownOpen(!dropdownOpen); setNotifOpen(false); setSearchOpen(false); }}
+            onClick={() => { setDropdownOpen(!dropdownOpen); setNotifOpen(false); }}
             className="w-9 h-9 rounded-full bg-primary text-white flex items-center justify-center font-bold text-sm hover:ring-2 hover:ring-primary/40 transition"
           >
             {name[0].toUpperCase()}
           </button>
-
           <AnimatePresence>
             {dropdownOpen && (
               <motion.div
@@ -218,7 +216,6 @@ export default function Navbar() {
             )}
           </AnimatePresence>
         </div>
-
       </div>
     </motion.header>
   );
