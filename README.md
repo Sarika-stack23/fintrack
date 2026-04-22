@@ -12,7 +12,7 @@
 | 🎨 Figma Design | https://www.figma.com/design/GMBMshLwOTC4R3QWERtmz0/Fintrack |
 | ▶️ Figma Prototype | https://www.figma.com/proto/GMBMshLwOTC4R3QWERtmz0/Fintrack |
 | 💻 GitHub Repo | https://github.com/Sarika-stack23/fintrack |
-| 🎥 Video Walkthrough | *(add loom link here)* |
+| 🎥 Video Walkthrough | https://drive.google.com/file/d/1rh8A0UVmAqfEIuRHm_xIxQctlHVXqyVr/view?usp=drive_link|
 
 ---
 
