@@ -3,7 +3,8 @@ import { NavLink } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   LayoutDashboard, ArrowLeftRight, PieChart,
-  Target, Settings, ChevronLeft, ChevronRight, X
+  Target, Settings, ChevronLeft, ChevronRight,
+  X, BarChart2, FileText
 } from "lucide-react";
 
 const links = [
@@ -11,6 +12,8 @@ const links = [
   { path: "/transactions", label: "Transactions", icon: ArrowLeftRight },
   { path: "/budget", label: "Budget", icon: PieChart },
   { path: "/goals", label: "Goals", icon: Target },
+  { path: "/analytics", label: "Analytics", icon: BarChart2 },
+  { path: "/reports", label: "Reports", icon: FileText },
   { path: "/settings", label: "Settings", icon: Settings },
 ];
 
@@ -44,27 +47,21 @@ export default function Sidebar({ onClose }: SidebarProps) {
           )}
         </AnimatePresence>
         <div className="flex items-center gap-2 ml-auto">
-          {/* Mobile Close */}
           {onClose && (
-            <button
-              onClick={onClose}
-              className="w-8 h-8 rounded-lg bg-white/10 hover:bg-white/20 flex items-center justify-center lg:hidden"
-            >
+            <button onClick={onClose}
+              className="w-8 h-8 rounded-lg bg-white/10 hover:bg-white/20 flex items-center justify-center lg:hidden">
               <X size={16} />
             </button>
           )}
-          {/* Collapse Toggle */}
-          <button
-            onClick={() => setCollapsed(!collapsed)}
-            className="w-8 h-8 rounded-lg bg-white/10 hover:bg-white/20 flex items-center justify-center transition hidden lg:flex"
-          >
+          <button onClick={() => setCollapsed(!collapsed)}
+            className="w-8 h-8 rounded-lg bg-white/10 hover:bg-white/20 items-center justify-center transition hidden lg:flex">
             {collapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
           </button>
         </div>
       </div>
 
       {/* Nav Links */}
-      <nav className="flex flex-col gap-1 px-3 py-4 flex-1">
+      <nav className="flex flex-col gap-1 px-3 py-4 flex-1 overflow-y-auto">
         {links.map((link) => {
           const Icon = link.icon;
           return (

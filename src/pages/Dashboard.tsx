@@ -3,16 +3,14 @@ import { useNavigate } from "react-router-dom";
 import StatCard from "../components/cards/StatCard";
 import LineChart from "../components/charts/LineChart";
 import DonutChart from "../components/charts/DonutChart";
-import BarChart from "../components/charts/BarChart";
-import { stats, transactions, budgets } from "../data/mockData";
-import { TrendingUp, TrendingDown, AlertCircle } from "lucide-react";
+import { stats, transactions } from "../data/mockData";
+import { ArrowUpRight, TrendingUp, TrendingDown } from "lucide-react";
 
 export default function Dashboard() {
   const navigate = useNavigate();
   const totalIncome = transactions.filter(t => t.amount > 0).reduce((a, b) => a + b.amount, 0);
   const totalExpense = transactions.filter(t => t.amount < 0).reduce((a, b) => a + Math.abs(b.amount), 0);
   const savingsRate = Math.round(((totalIncome - totalExpense) / totalIncome) * 100);
-  const warningBudgets = budgets.filter(b => (b.spent / b.limit) >= 0.7);
 
   return (
     <motion.div
@@ -27,17 +25,9 @@ export default function Dashboard() {
           <h1 className="text-xl font-bold text-dark">Overview</h1>
           <p className="text-sm text-gray-400">Your financial summary for April 2026</p>
         </div>
-        <div className="flex gap-2">
-          <span className="text-xs bg-success/10 text-success px-3 py-1.5 rounded-xl font-medium flex items-center gap-1">
-            <TrendingUp size={12} />
-            Savings Rate: {savingsRate}%
-          </span>
-          {warningBudgets.length > 0 && (
-            <span className="text-xs bg-warning/10 text-warning px-3 py-1.5 rounded-xl font-medium flex items-center gap-1">
-              <AlertCircle size={12} />
-              {warningBudgets.length} Budget Warning
-            </span>
-          )}
+        <div className="flex items-center gap-2 px-4 py-2 bg-success/10 rounded-xl">
+          <TrendingUp size={16} className="text-success" />
+          <span className="text-sm font-semibold text-success">Savings Rate: {savingsRate}%</span>
         </div>
       </div>
 
@@ -55,61 +45,52 @@ export default function Dashboard() {
         ))}
       </div>
 
-      {/* Charts Row 1 */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <LineChart />
-        <DonutChart />
-      </div>
-
-      {/* Charts Row 2 */}
-      <BarChart />
-
-      {/* Quick Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      {/* Quick Stats Bar */}
+      <div className="grid grid-cols-3 gap-4">
         <motion.div
           whileHover={{ scale: 1.02 }}
-          className="bg-success/10 rounded-2xl p-5 flex items-center gap-4"
+          className="bg-success/10 rounded-2xl p-4 flex items-center gap-3"
         >
-          <div className="w-12 h-12 rounded-xl bg-success/20 flex items-center justify-center">
-            <TrendingUp size={20} className="text-success" />
+          <div className="w-10 h-10 rounded-xl bg-success/20 flex items-center justify-center">
+            <TrendingUp size={18} className="text-success" />
           </div>
           <div>
             <p className="text-xs text-gray-500">Total Income</p>
-            <p className="text-xl font-bold text-success">
-              +₹{totalIncome.toLocaleString()}
-            </p>
+            <p className="text-base font-bold text-success">+₹{totalIncome.toLocaleString()}</p>
           </div>
         </motion.div>
 
         <motion.div
           whileHover={{ scale: 1.02 }}
-          className="bg-danger/10 rounded-2xl p-5 flex items-center gap-4"
+          className="bg-danger/10 rounded-2xl p-4 flex items-center gap-3"
         >
-          <div className="w-12 h-12 rounded-xl bg-danger/20 flex items-center justify-center">
-            <TrendingDown size={20} className="text-danger" />
+          <div className="w-10 h-10 rounded-xl bg-danger/20 flex items-center justify-center">
+            <TrendingDown size={18} className="text-danger" />
           </div>
           <div>
             <p className="text-xs text-gray-500">Total Expense</p>
-            <p className="text-xl font-bold text-danger">
-              -₹{totalExpense.toLocaleString()}
-            </p>
+            <p className="text-base font-bold text-danger">-₹{totalExpense.toLocaleString()}</p>
           </div>
         </motion.div>
 
         <motion.div
           whileHover={{ scale: 1.02 }}
-          className="bg-primary/10 rounded-2xl p-5 flex items-center gap-4"
+          className="bg-primary/10 rounded-2xl p-4 flex items-center gap-3"
         >
-          <div className="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center">
-            <TrendingUp size={20} className="text-primary" />
+          <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center">
+            <span className="text-primary font-bold text-sm">₹</span>
           </div>
           <div>
             <p className="text-xs text-gray-500">Net Savings</p>
-            <p className="text-xl font-bold text-primary">
-              ₹{(totalIncome - totalExpense).toLocaleString()}
-            </p>
+            <p className="text-base font-bold text-primary">₹{(totalIncome - totalExpense).toLocaleString()}</p>
           </div>
         </motion.div>
+      </div>
+
+      {/* Charts */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <LineChart />
+        <DonutChart />
       </div>
 
       {/* Recent Transactions */}
@@ -121,9 +102,9 @@ export default function Dashboard() {
           </div>
           <button
             onClick={() => navigate("/transactions")}
-            className="text-xs text-primary font-semibold hover:underline px-3 py-1.5 rounded-xl hover:bg-primary/10 transition"
+            className="flex items-center gap-1 text-xs text-primary font-semibold hover:underline px-3 py-1.5 rounded-xl hover:bg-primary/10 transition"
           >
-            View All →
+            View All <ArrowUpRight size={12} />
           </button>
         </div>
         <div className="flex flex-col">
