@@ -5,8 +5,8 @@ import { Search, Bell, Settings, LayoutDashboard, CreditCard, LogOut, X, Menu } 
 
 function getGreeting() {
   const hour = new Date().getHours();
-  if (hour < 12) return "Good Morning";
-  if (hour < 17) return "Good Afternoon";
+  if (hour >= 0 && hour < 12) return "Good Morning";
+  if (hour >= 12 && hour < 16) return "Good Afternoon";
   return "Good Evening";
 }
 
@@ -21,6 +21,8 @@ const allPages = [
   { label: "Transactions", path: "/transactions", desc: "Income & expenses" },
   { label: "Budget", path: "/budget", desc: "Spending limits" },
   { label: "Goals", path: "/goals", desc: "Savings goals" },
+  { label: "Analytics", path: "/analytics", desc: "Financial analytics" },
+  { label: "Reports", path: "/reports", desc: "Download reports" },
   { label: "Settings", path: "/settings", desc: "Account preferences" },
 ];
 
@@ -62,9 +64,7 @@ export default function Navbar({ onMenuClick }: NavbarProps) {
       transition={{ duration: 0.4 }}
       className="w-full bg-white border-b border-gray-100 px-4 lg:px-6 py-4 flex items-center justify-between shadow-sm z-50 relative"
     >
-      {/* Left */}
       <div className="flex items-center gap-3">
-        {/* Mobile Menu Button */}
         <button
           onClick={onMenuClick}
           className="p-2 rounded-xl hover:bg-gray-100 transition lg:hidden"
@@ -80,10 +80,7 @@ export default function Navbar({ onMenuClick }: NavbarProps) {
         </div>
       </div>
 
-      {/* Right */}
       <div className="flex items-center gap-2 lg:gap-3" ref={dropdownRef}>
-
-        {/* Search */}
         <div className="relative hidden md:block">
           <div className="flex items-center gap-2 px-4 py-2 rounded-xl border border-gray-200 bg-light w-48 focus-within:ring-2 focus-within:ring-primary transition">
             <Search size={14} className="text-gray-400 flex-shrink-0" />
@@ -125,7 +122,6 @@ export default function Navbar({ onMenuClick }: NavbarProps) {
           </AnimatePresence>
         </div>
 
-        {/* Bell */}
         <div className="relative">
           <button
             onClick={() => { setNotifOpen(!notifOpen); setDropdownOpen(false); }}
@@ -150,7 +146,7 @@ export default function Navbar({ onMenuClick }: NavbarProps) {
                 <div className="flex flex-col gap-3">
                   {[
                     { icon: "⚠️", title: "Entertainment budget at 75%", sub: "Only ₹501 remaining" },
-                    { icon: "��", title: "New Phone goal at 60%", sub: "₹10,000 more to go" },
+                    { icon: "🎯", title: "New Phone goal at 60%", sub: "₹10,000 more to go" },
                     { icon: "💰", title: "Salary credited", sub: "+₹30,000 on Apr 1" },
                   ].map((n, i) => (
                     <div key={i} className="flex gap-3 items-start p-2 rounded-xl hover:bg-light transition cursor-pointer">
@@ -167,7 +163,6 @@ export default function Navbar({ onMenuClick }: NavbarProps) {
           </AnimatePresence>
         </div>
 
-        {/* Avatar */}
         <div className="relative">
           <button
             onClick={() => { setDropdownOpen(!dropdownOpen); setNotifOpen(false); }}

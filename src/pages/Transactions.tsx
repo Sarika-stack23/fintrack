@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { transactions as initial } from "../data/mockData";
+import { Trash2 } from "lucide-react";
 
 export default function Transactions() {
   const [transactions, setTransactions] = useState(initial);
@@ -35,6 +36,10 @@ export default function Transactions() {
     setShowForm(false);
   };
 
+  const handleDelete = (id: number) => {
+    setTransactions(transactions.filter(t => t.id !== id));
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -56,7 +61,6 @@ export default function Transactions() {
         </motion.button>
       </div>
 
-      {/* Add Transaction Form */}
       <AnimatePresence>
         {showForm && (
           <motion.div
@@ -66,8 +70,6 @@ export default function Transactions() {
             className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 flex flex-col gap-4"
           >
             <h2 className="text-base font-semibold text-dark">New Transaction</h2>
-
-            {/* Type Toggle */}
             <div className="flex gap-2">
               <button
                 onClick={() => setNewType("expense")}
@@ -84,7 +86,6 @@ export default function Transactions() {
                 📈 Income
               </button>
             </div>
-
             <div className="flex flex-col gap-1">
               <label className="text-xs font-medium text-gray-400">Name</label>
               <input
@@ -94,7 +95,6 @@ export default function Transactions() {
                 className="px-4 py-2 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
               />
             </div>
-
             <div className="flex gap-3">
               <div className="flex flex-col gap-1 flex-1">
                 <label className="text-xs font-medium text-gray-400">Amount (₹)</label>
@@ -121,7 +121,6 @@ export default function Transactions() {
                 </select>
               </div>
             </div>
-
             <motion.button
               whileTap={{ scale: 0.95 }}
               onClick={handleAdd}
@@ -133,7 +132,6 @@ export default function Transactions() {
         )}
       </AnimatePresence>
 
-      {/* Search + Filter */}
       <div className="flex flex-col sm:flex-row gap-3">
         <input
           type="text"
@@ -159,7 +157,6 @@ export default function Transactions() {
         </div>
       </div>
 
-      {/* Table */}
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
         <div className="grid grid-cols-4 px-6 py-3 bg-light text-xs font-semibold text-gray-400 uppercase tracking-wide">
           <span>Name</span>
@@ -176,8 +173,9 @@ export default function Transactions() {
                 key={t.id}
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, x: -100 }}
                 transition={{ delay: i * 0.05 }}
-                className="grid grid-cols-4 px-6 py-4 items-center hover:bg-light transition"
+                className="grid grid-cols-4 px-6 py-4 items-center hover:bg-light transition group"
               >
                 <div className="flex items-center gap-3">
                   <div className={`w-8 h-8 rounded-xl flex items-center justify-center text-sm
@@ -188,10 +186,20 @@ export default function Transactions() {
                 </div>
                 <span className="text-sm text-gray-400">{t.category}</span>
                 <span className="text-sm text-gray-400">{t.date}</span>
-                <span className={`text-sm font-semibold text-right
-                  ${t.amount > 0 ? "text-success" : "text-danger"}`}>
-                  {t.amount > 0 ? "+" : ""}₹{Math.abs(t.amount).toLocaleString()}
-                </span>
+                <div className="flex items-center justify-end gap-3">
+                  <span className={`text-sm font-semibold
+                    ${t.amount > 0 ? "text-success" : "text-danger"}`}>
+                    {t.amount > 0 ? "+" : ""}₹{Math.abs(t.amount).toLocaleString()}
+                  </span>
+                  <motion.button
+                    whileTap={{ scale: 0.9 }}
+                    onClick={() => handleDelete(t.id)}
+                    className="opacity-0 group-hover:opacity-100 p-1.5 rounded-lg hover:bg-danger/10 transition"
+                    aria-label="Delete transaction"
+                  >
+                    <Trash2 size={14} className="text-danger" />
+                  </motion.button>
+                </div>
               </motion.div>
             ))
           )}
