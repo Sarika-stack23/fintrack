@@ -6,6 +6,7 @@ import {
   Target, Settings, ChevronLeft, ChevronRight,
   X, BarChart2, FileText
 } from "lucide-react";
+import { useApp } from "../../context/AppContext";
 
 const links = [
   { path: "/", label: "Dashboard", icon: LayoutDashboard },
@@ -23,8 +24,8 @@ interface SidebarProps {
 
 export default function Sidebar({ onClose }: SidebarProps) {
   const [collapsed, setCollapsed] = useState(false);
-  const name = localStorage.getItem("name") || "Sarika";
-  const email = localStorage.getItem("email") || "sarika@email.com";
+  // Read from context so it updates instantly when Settings saves
+  const { profileName, profileEmail } = useApp();
 
   return (
     <motion.aside
@@ -48,13 +49,17 @@ export default function Sidebar({ onClose }: SidebarProps) {
         </AnimatePresence>
         <div className="flex items-center gap-2 ml-auto">
           {onClose && (
-            <button onClick={onClose}
-              className="w-8 h-8 rounded-lg bg-white/10 hover:bg-white/20 flex items-center justify-center lg:hidden">
+            <button
+              onClick={onClose}
+              className="w-8 h-8 rounded-lg bg-white/10 hover:bg-white/20 flex items-center justify-center lg:hidden"
+            >
               <X size={16} />
             </button>
           )}
-          <button onClick={() => setCollapsed(!collapsed)}
-            className="w-8 h-8 rounded-lg bg-white/10 hover:bg-white/20 items-center justify-center transition hidden lg:flex">
+          <button
+            onClick={() => setCollapsed(!collapsed)}
+            className="w-8 h-8 rounded-lg bg-white/10 hover:bg-white/20 items-center justify-center transition hidden lg:flex"
+          >
             {collapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
           </button>
         </div>
@@ -80,7 +85,10 @@ export default function Sidebar({ onClose }: SidebarProps) {
             >
               {({ isActive }) => (
                 <>
-                  <Icon size={18} className={`flex-shrink-0 ${isActive ? "text-white" : "text-gray-400 group-hover:text-white"}`} />
+                  <Icon
+                    size={18}
+                    className={`flex-shrink-0 ${isActive ? "text-white" : "text-gray-400 group-hover:text-white"}`}
+                  />
                   <AnimatePresence>
                     {!collapsed && (
                       <motion.span
@@ -100,11 +108,15 @@ export default function Sidebar({ onClose }: SidebarProps) {
         })}
       </nav>
 
-      {/* Bottom User */}
+      {/* Bottom User — now reactive via context */}
       <div className="px-3 py-4 border-t border-white/10">
-        <div className={`flex items-center gap-3 px-3 py-2.5 bg-white/10 rounded-xl ${collapsed ? "justify-center" : ""}`}>
+        <div
+          className={`flex items-center gap-3 px-3 py-2.5 bg-white/10 rounded-xl ${
+            collapsed ? "justify-center" : ""
+          }`}
+        >
           <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-sm font-bold flex-shrink-0">
-            {name[0].toUpperCase()}
+            {profileName[0].toUpperCase()}
           </div>
           <AnimatePresence>
             {!collapsed && (
@@ -114,8 +126,8 @@ export default function Sidebar({ onClose }: SidebarProps) {
                 exit={{ opacity: 0 }}
                 className="overflow-hidden flex-1"
               >
-                <p className="text-sm font-semibold truncate">{name}</p>
-                <p className="text-xs text-gray-400 truncate">{email}</p>
+                <p className="text-sm font-semibold truncate">{profileName}</p>
+                <p className="text-xs text-gray-400 truncate">{profileEmail}</p>
               </motion.div>
             )}
           </AnimatePresence>

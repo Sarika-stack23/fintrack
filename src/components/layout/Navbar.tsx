@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { Search, Bell, Settings, LayoutDashboard, CreditCard, LogOut, X, Menu } from "lucide-react";
+import { useApp } from "../../context/AppContext";
 
 function getGreeting() {
   const hour = new Date().getHours();
@@ -31,8 +32,8 @@ interface NavbarProps {
 }
 
 export default function Navbar({ onMenuClick }: NavbarProps) {
-  const name = localStorage.getItem("name") || "Sarika";
-  const email = localStorage.getItem("email") || "sarika@email.com";
+  // Read from context so it updates instantly when Settings saves
+  const { profileName, profileEmail } = useApp();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -40,9 +41,10 @@ export default function Navbar({ onMenuClick }: NavbarProps) {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
-  const searchResults = allPages.filter(p =>
-    p.label.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    p.desc.toLowerCase().includes(searchQuery.toLowerCase())
+  const searchResults = allPages.filter(
+    (p) =>
+      p.label.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      p.desc.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   useEffect(() => {
@@ -74,7 +76,7 @@ export default function Navbar({ onMenuClick }: NavbarProps) {
         </button>
         <div>
           <h1 className="text-base lg:text-lg font-semibold text-dark">
-            {getGreeting()}, {name} 👋
+            {getGreeting()}, {profileName} 👋
           </h1>
           <p className="text-xs text-gray-400 hidden sm:block">{getDate()}</p>
         </div>
@@ -88,7 +90,10 @@ export default function Navbar({ onMenuClick }: NavbarProps) {
               type="text"
               placeholder="Search..."
               value={searchQuery}
-              onChange={(e) => { setSearchQuery(e.target.value); setSearchOpen(e.target.value.length > 0); }}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                setSearchOpen(e.target.value.length > 0);
+              }}
               onFocus={() => searchQuery && setSearchOpen(true)}
               className="text-sm bg-transparent focus:outline-none w-full text-dark"
             />
@@ -168,7 +173,7 @@ export default function Navbar({ onMenuClick }: NavbarProps) {
             onClick={() => { setDropdownOpen(!dropdownOpen); setNotifOpen(false); }}
             className="w-9 h-9 rounded-full bg-primary text-white flex items-center justify-center font-bold text-sm hover:ring-2 hover:ring-primary/40 transition"
           >
-            {name[0].toUpperCase()}
+            {profileName[0].toUpperCase()}
           </button>
           <AnimatePresence>
             {dropdownOpen && (
@@ -179,8 +184,8 @@ export default function Navbar({ onMenuClick }: NavbarProps) {
                 className="absolute right-0 top-12 w-56 bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden z-50"
               >
                 <div className="px-4 py-3 bg-light border-b border-gray-100">
-                  <p className="text-sm font-semibold text-dark">{name}</p>
-                  <p className="text-xs text-gray-400">{email}</p>
+                  <p className="text-sm font-semibold text-dark">{profileName}</p>
+                  <p className="text-xs text-gray-400">{profileEmail}</p>
                 </div>
                 <div className="p-2">
                   {[

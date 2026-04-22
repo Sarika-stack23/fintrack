@@ -1,16 +1,19 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import Toggle from "../components/ui/Toggle";
+import { useApp } from "../context/AppContext";
 
 export default function Settings() {
-  const [name, setName] = useState(() => localStorage.getItem("name") || "Sarika");
-  const [email, setEmail] = useState(() => localStorage.getItem("email") || "sarikajivrajika2005@gmail.com");
+  const { profileName, profileEmail, updateProfile } = useApp();
+
+  const [name, setName] = useState(profileName);
+  const [email, setEmail] = useState(profileEmail);
   const [currency, setCurrency] = useState(() => localStorage.getItem("currency") || "INR");
   const [saved, setSaved] = useState(false);
 
   const handleSave = () => {
-    localStorage.setItem("name", name);
-    localStorage.setItem("email", email);
+    // updateProfile updates context + localStorage in one go
+    updateProfile(name, email);
     localStorage.setItem("currency", currency);
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
@@ -27,17 +30,19 @@ export default function Settings() {
         <h1 className="text-xl font-bold text-dark">Settings</h1>
         <p className="text-sm text-gray-400">Manage your account preferences</p>
       </div>
+
       <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex flex-col gap-5">
         <h2 className="text-base font-semibold text-dark">Profile</h2>
         <div className="flex items-center gap-4">
           <div className="w-16 h-16 rounded-2xl bg-primary text-white flex items-center justify-center text-2xl font-bold">
-            {name[0]}
+            {name[0]?.toUpperCase() || "U"}
           </div>
           <div>
             <p className="text-sm font-semibold text-dark">{name}</p>
             <p className="text-xs text-gray-400">{email}</p>
           </div>
         </div>
+
         <div className="flex flex-col gap-1">
           <label className="text-xs font-medium text-gray-400">Full Name</label>
           <input
@@ -46,6 +51,7 @@ export default function Settings() {
             className="px-4 py-2 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
           />
         </div>
+
         <div className="flex flex-col gap-1">
           <label className="text-xs font-medium text-gray-400">Email</label>
           <input
@@ -54,6 +60,7 @@ export default function Settings() {
             className="px-4 py-2 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
           />
         </div>
+
         <div className="flex flex-col gap-1">
           <label className="text-xs font-medium text-gray-400">Currency</label>
           <select
@@ -67,6 +74,7 @@ export default function Settings() {
             <option value="GBP">£ GBP — British Pound</option>
           </select>
         </div>
+
         <motion.button
           whileTap={{ scale: 0.95 }}
           onClick={handleSave}
@@ -75,13 +83,14 @@ export default function Settings() {
         >
           {saved ? "✅ Saved!" : "Save Changes"}
         </motion.button>
+
         {saved && (
           <motion.p
             initial={{ opacity: 0, y: -5 }}
             animate={{ opacity: 1, y: 0 }}
             className="text-center text-xs text-success font-medium"
           >
-            Profile updated! Data saved to browser ✅
+            Profile updated! Sidebar & navbar refreshed instantly ✅
           </motion.p>
         )}
       </div>

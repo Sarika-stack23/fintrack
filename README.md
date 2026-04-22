@@ -11,8 +11,8 @@
 | 🌐 Live Demo | https://fintrack-dashboard-tau.vercel.app |
 | 🎨 Figma Design | https://www.figma.com/design/GMBMshLwOTC4R3QWERtmz0/Fintrack |
 | ▶️ Figma Prototype | https://www.figma.com/proto/GMBMshLwOTC4R3QWERtmz0/Fintrack |
-| 💻 GitHub Repo | https://github.com/23btrcn057/fintrack-dashboard |
-| 🎥 Video Walkthrough | (add loom link here) |
+| 💻 GitHub Repo | https://github.com/Sarika-stack23/fintrack |
+| 🎥 Video Walkthrough | *(add loom link here)* |
 
 ---
 
@@ -21,13 +21,15 @@
 | Feature | Description |
 |---------|-------------|
 | 📊 Dashboard | Overview with stat cards, line chart, donut chart, recent transactions |
-| 💳 Transactions | Add income/expense, search, filter by category |
+| 💳 Transactions | Add income/expense, search, filter by category, delete entries |
 | 📈 Budget Tracker | Progress bars per category, warning states, overall summary |
 | 🎯 Goals | Create goals, add money, track progress |
-| ⚙️ Settings | Edit profile, currency, notifications, appearance toggles |
+| 📉 Analytics | Area chart, radar chart, weekly bar chart, insight cards |
+| 📄 Reports | Monthly, budget, and goals reports with one-click PDF export |
+| ⚙️ Settings | Edit profile, currency, notification toggles — **sidebar & navbar update instantly** |
 | 🔔 Notifications | Bell dropdown with alerts |
-| 🔍 Search | Global search navigates to pages |
-| 🌗 Dynamic Greeting | Changes Morning/Afternoon/Evening based on time |
+| 🔍 Search | Global search navigates to any page |
+| 🌗 Dynamic Greeting | Changes Morning / Afternoon / Evening based on time |
 | 💾 Persistent Data | localStorage saves settings across sessions |
 | 📱 Responsive | Works on desktop and mobile |
 | ✨ Animations | Framer Motion on every component |
@@ -39,15 +41,17 @@
 
 | Tool | Version | Purpose |
 |------|---------|---------|
-| React | 18 | Frontend framework |
-| TypeScript | 5 | Type safety |
+| React | 19 | Frontend framework |
+| TypeScript | 6 | Type safety |
 | Vite | 8 | Build tool |
 | Tailwind CSS | 3 | Styling + design tokens |
-| Framer Motion | Latest | Animations |
-| Recharts | Latest | Charts |
-| Lucide React | Latest | Icons |
-| React Router | v6 | Navigation |
-| Vercel | - | Deployment |
+| Framer Motion | 12 | Animations |
+| Recharts | 3 | Charts |
+| Lucide React | 1 | Icons |
+| React Router | v7 | Navigation |
+| jsPDF | 4 | PDF export |
+| Storybook | 10 | Component stories & docs |
+| Vercel | — | Deployment |
 
 ---
 
@@ -71,30 +75,18 @@
 | Body | Inter | Regular | 14px |
 | Small | Inter | Regular | 12px |
 
-### Spacing Scale
-```
-4px  → xs
-8px  → sm
-12px → md
-16px → base
-24px → lg
-32px → xl
-48px → 2xl
-64px → 3xl
-```
-
 ---
 
 ## 📦 Installation & Setup
 
 ### Prerequisites
-- Node.js 18+
+- Node.js 20+
 - npm 9+
 
 ### Clone & Install
 ```bash
-git clone https://github.com/23btrcn057/fintrack-dashboard
-cd fintrack-dashboard
+git clone https://github.com/Sarika-stack23/fintrack
+cd fintrack
 npm install
 ```
 
@@ -109,6 +101,12 @@ Open http://localhost:5173
 npm run build
 ```
 
+### Run Storybook
+```bash
+npm run storybook
+```
+Open http://localhost:6006
+
 ### Deploy to Vercel
 ```bash
 vercel --prod
@@ -119,39 +117,48 @@ vercel --prod
 ## 📁 Project Structure
 
 ```
-fintrack-dashboard/
+fintrack/
 ├── public/
 ├── src/
 │   ├── components/
 │   │   ├── ui/
-│   │   │   ├── Toggle.tsx       # Animated toggle switch
-│   │   │   └── Button.tsx       # Reusable button
+│   │   │   ├── Toggle.tsx         # Animated toggle switch
+│   │   │   ├── AnimatedCounter.tsx
+│   │   │   ├── Loader.tsx
+│   │   │   ├── PageTransition.tsx
+│   │   │   └── ErrorBoundary.tsx
 │   │   ├── charts/
-│   │   │   ├── LineChart.tsx    # Income vs Expense
-│   │   │   └── DonutChart.tsx   # Spending by category
+│   │   │   ├── LineChart.tsx      # Income vs Expense
+│   │   │   ├── DonutChart.tsx     # Spending by category
+│   │   │   └── BarChart.tsx       # Monthly overview
 │   │   ├── cards/
-│   │   │   ├── StatCard.tsx     # Balance/Income/Expense/Savings
-│   │   │   ├── BudgetCard.tsx   # Budget progress card
-│   │   │   └── GoalCard.tsx     # Savings goal card
+│   │   │   ├── StatCard.tsx       # Balance/Income/Expense/Savings
+│   │   │   ├── BudgetCard.tsx     # Budget progress card
+│   │   │   └── GoalCard.tsx       # Savings goal card
 │   │   └── layout/
-│   │       ├── Sidebar.tsx      # Collapsible navigation
-│   │       └── Navbar.tsx       # Top bar with search/notifications
+│   │       ├── Sidebar.tsx        # Collapsible navigation (reactive to profile changes)
+│   │       └── Navbar.tsx         # Top bar with search/notifications (reactive)
 │   ├── pages/
-│   │   ├── Dashboard.tsx        # Overview page
-│   │   ├── Transactions.tsx     # Transaction management
-│   │   ├── Budget.tsx           # Budget tracker
-│   │   ├── Goals.tsx            # Savings goals
-│   │   └── Settings.tsx         # User preferences
+│   │   ├── Dashboard.tsx
+│   │   ├── Transactions.tsx
+│   │   ├── Budget.tsx
+│   │   ├── Goals.tsx
+│   │   ├── Analytics.tsx
+│   │   ├── Reports.tsx            # PDF export via jsPDF
+│   │   ├── Settings.tsx           # Updates global context on save
+│   │   └── NotFound.tsx
 │   ├── context/
-│   │   └── AppContext.tsx       # Global state management
+│   │   └── AppContext.tsx          # Global state: transactions, budgets, goals, profile
 │   ├── data/
-│   │   └── mockData.ts          # Sample data
+│   │   └── mockData.ts
 │   ├── hooks/
 │   │   ├── useTransactions.ts
 │   │   └── useBudget.ts
-│   ├── App.tsx                  # Router setup
-│   └── main.tsx                 # Entry point
-├── tailwind.config.js           # Design tokens
+│   ├── stories/                   # Storybook stories for all components
+│   ├── App.tsx
+│   └── main.tsx
+├── .storybook/
+├── tailwind.config.js
 ├── vite.config.ts
 └── README.md
 ```
@@ -162,15 +169,34 @@ fintrack-dashboard/
 
 | Decision | Choice | Reason |
 |----------|--------|--------|
-| Build Tool | Vite | 10x faster than CRA, instant HMR |
+| Build Tool | Vite 8 | Fast HMR, instant dev server |
 | Language | TypeScript | Type safety, better DX |
-| Styling | Tailwind CSS | Utility-first, maps directly to Figma tokens |
+| Styling | Tailwind CSS | Utility-first, maps directly to design tokens |
 | Animation | Framer Motion | Most powerful React animation library |
 | Charts | Recharts | Lightweight, composable, React-native |
 | Icons | Lucide React | Clean, consistent, tree-shakeable |
 | State | Context API | No over-engineering for this scale |
+| Profile State | React Context | Sidebar & Navbar update instantly without page reload |
 | Persistence | localStorage | Simple client-side persistence |
-| Deployment | Vercel | Free tier, instant deploys, great DX |
+| PDF Export | jsPDF | Lightweight, no server needed |
+| Deployment | Vercel | Free tier, instant deploys |
+
+---
+
+## 🔄 Profile Reactive Update Flow
+
+When the user saves their name/email in **Settings**:
+
+```
+Settings.tsx → updateProfile() in AppContext
+     ↓
+AppContext updates profileName & profileEmail state
+     ↓
+Sidebar.tsx reads profileName via useApp() → re-renders instantly
+Navbar.tsx reads profileName via useApp()  → re-renders instantly
+```
+
+No page reload required. Changes are visible immediately across all components.
 
 ---
 
@@ -181,19 +207,18 @@ fintrack-dashboard/
 | Vercel Hosting | Free | ₹0 |
 | Figma | Free | ₹0 |
 | GitHub | Free | ₹0 |
-| Domain (optional) | .app domain | ₹67/month |
+| Domain (optional) | .app domain | ~₹67/month |
 | **Total** | | **₹0 – ₹67/month** |
-
-> This project can run completely free forever using Vercel free tier + GitHub free tier.
 
 ---
 
 ## ✅ Accessibility
 
-- ✅ Semantic HTML (nav, main, header, section)
+- ✅ Semantic HTML (`nav`, `main`, `header`, `section`)
 - ✅ WCAG AA color contrast ratios
 - ✅ Keyboard navigable interface
-- ✅ aria-labels on all icon buttons
+- ✅ `aria-labels` on all icon buttons
+- ✅ Skip to main content link
 - ✅ Focus states visible
 - ✅ Screen reader friendly markup
 - ✅ Responsive on all screen sizes
@@ -204,21 +229,22 @@ fintrack-dashboard/
 
 ### 1. Dashboard
 - 4 stat cards (Balance, Income, Expense, Savings)
-- Line chart (Income vs Expense 6 months)
+- Quick income/expense/net savings strip
+- Line chart (Income vs Expense — 6 months)
 - Donut chart (Spending by category)
-- Recent transactions list
-- View All → navigates to Transactions
+- Recent transactions list → navigates to Transactions
 
 ### 2. Transactions
 - Search by name
-- Filter by category (All/Food/Income/Entertainment/Utilities)
+- Filter by category (All / Food / Income / Entertainment / Utilities)
 - Add new transaction (Income or Expense)
+- Delete any transaction on hover
 - Real-time table update
 
 ### 3. Budget Tracker
 - Overall budget summary card
 - Per-category progress bars
-- Color coded (Green/Orange/Red based on usage)
+- Color coded (Green / Orange / Red based on usage %)
 - Warning states at 70% and 90%
 
 ### 4. Goals
@@ -227,19 +253,40 @@ fintrack-dashboard/
 - Progress bars with percentage
 - Goal reached celebration state
 
-### 5. Settings
-- Edit name and email
+### 5. Analytics
+- Insight cards (best month, highest spending, etc.)
+- Area chart — Income vs Expense vs Savings
+- Weekly spending bar chart
+- Financial health radar chart
+- Monthly comparison bar chart
+
+### 6. Reports
+- Switch between Monthly / Budget / Goals report views
+- One-click **Export PDF** (downloads a formatted PDF instantly)
+
+### 7. Settings
+- Edit name and email — **sidebar and navbar update instantly on save**
 - Change currency
-- Persistent via localStorage
 - Notification toggles
 - Appearance toggles
 
 ---
 
-## 📜 License
+## 📖 Storybook Components
 
-MIT License — feel free to use this project for learning or inspiration.
+Stories are written for all major components:
+
+- `Cards/StatCard` — Balance, Income, Expense, Savings variants
+- `Cards/BudgetCard` — Safe, Warning, Danger states
+- `Cards/GoalCard` — Phone, Trip, Laptop goals
+- `UI/Toggle` — On / Off states
 
 ---
 
-*Built with ❤️ for HiDevs Frontend Engineer Internship Challenge*
+## 📜 License
+
+MIT License — free to use for learning or inspiration.
+
+---
+
+*Built with ❤️ for the HiDevs Frontend Engineer Internship Challenge*
